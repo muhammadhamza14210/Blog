@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'  
+import Footer from './components/Footer'
 import Header from './components/Header'
 import About from './pages/About'
 import Dashboard from './pages/Dashboard'
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/dashboard" element = {<Dashboard/ >}></Route>
             <Route path="/projects" element = {<Projects/ >}></Route>
         </Routes>
+        <Footer />
     </BrowserRouter>
   )
 }

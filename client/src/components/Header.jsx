@@ -47,9 +47,19 @@ export default function Header() {
         label = {
           <Avatar
           alt = 'user'
-          img = {currentUser.profilePicture}/>
+          img = {currentUser.profilePicture}
+          rounded/>
         }>
-          
+          <Dropdown.Header>
+            <span className="block text-sm">@{currentUser.username}</span>
+            <span className="block text-sm font-medium truncate">{currentUser.email}</span>
+          </Dropdown.Header>
+          <Link to={'/dashboard?tab=profile'}>
+            <Dropdown.Item>Profile</Dropdown.Item>
+          </Link>
+          <Dropdown.Divider />
+          <Dropdown.Item>Logout</Dropdown.Item>
+        
         </Dropdown>) : (
           <Link to="/sign-in">
           <Button gradientDuoTone="tealToLime" outline>

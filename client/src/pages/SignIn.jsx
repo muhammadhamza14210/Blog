@@ -5,15 +5,22 @@ import { useState } from "react";
 import { signInFailure, signInSuccess,signInStart } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const {loading, error: errorMessage} = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -71,14 +78,21 @@ export default function SignIn() {
                 onChange={handleChange}
               />
             </div>
-            <div>
+            <div className="relative">
               <Label value="Your Password" />
               <TextInput
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="**********"
                 id="password"
                 onChange={handleChange}
               />
+              <button
+                type="button"
+                onClick={handleClickShowPassword}
+                className="absolute inset-y-0 right-0 pr-3 mt-5 flex items-center text-sm leading-5"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
 
             <Button

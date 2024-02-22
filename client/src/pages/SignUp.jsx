@@ -3,15 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { Label, TextInput, Button, Alert, Spinner } from "flowbite-react";
 import { useState } from "react";
 import OAuth from "../components/OAuth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password || !formData.username) {
@@ -80,14 +88,21 @@ export default function SignUp() {
                 onChange={handleChange}
               />
             </div>
-            <div>
+            <div className="relative">
               <Label value="Your Password" />
               <TextInput
-                type="password"
-                placeholder="Password"
+                type={showPassword ? "text" : "password"}
+                placeholder="**********"
                 id="password"
                 onChange={handleChange}
               />
+              <button
+                type="button"
+                onClick={handleClickShowPassword}
+                className="absolute inset-y-0 right-0 pr-3 mt-5 flex items-center text-sm leading-5"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
 
             <Button

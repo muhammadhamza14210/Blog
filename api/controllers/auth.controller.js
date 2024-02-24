@@ -40,7 +40,7 @@ export const signin = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return next(errorHandler(404, "Invalid username or password"));
+      return next(errorHandler(404, "User not found"));
     }
 
     const isMatch = bcryptjs.compareSync(password, user.password);

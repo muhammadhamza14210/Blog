@@ -160,6 +160,26 @@ export default function DashProfile() {
       console.log(error.message);
     }
   };
+
+  useEffect(() => {
+    if (updateUserSucess) {
+      const timer = setTimeout(() => {
+        setUpdateUserSuccess(null); // Clears the success message after 5 seconds
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateUserSucess]);
+
+  useEffect(() => {
+    if (updateUserError) {
+      const timer = setTimeout(() => {
+        setUpdateUserError(null); // Clears the success message after 5 seconds
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateUserError]);
+
+
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-4xl">Profile</h1>

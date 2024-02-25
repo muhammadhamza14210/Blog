@@ -9,6 +9,8 @@ import Projects from './pages/Projects'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import PrivateRoute from './components/PrivateRoute'
+import AdminPrivateRoute from './components/AdminPrivateRoute'
+import CreatePost from './pages/CreatePost'
 
 export default function App() {
   return (
@@ -21,6 +23,9 @@ export default function App() {
             <Route path="/sign-up" element = {<SignUp/ >}></Route>
             <Route element = {<PrivateRoute/>}>
                 <Route path="/dashboard" element = {<Dashboard/ >}></Route>
+            </Route>
+            <Route element = {<AdminPrivateRoute/>}>
+                <Route path="/create-post" element = {<CreatePost/ >}></Route>
             </Route>
             <Route path="/projects" element = {<Projects/ >}></Route>
         </Routes>

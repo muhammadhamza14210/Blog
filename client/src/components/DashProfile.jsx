@@ -164,7 +164,7 @@ export default function DashProfile() {
   useEffect(() => {
     if (updateUserSucess) {
       const timer = setTimeout(() => {
-        setUpdateUserSuccess(null); // Clears the success message after 5 seconds
+        setUpdateUserSuccess(null); // Clears the success message after 3 seconds
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -173,7 +173,7 @@ export default function DashProfile() {
   useEffect(() => {
     if (updateUserError) {
       const timer = setTimeout(() => {
-        setUpdateUserError(null); // Clears the success message after 5 seconds
+        setUpdateUserError(null); // Clears the success message after 3 seconds
       }, 3000);
       return () => clearTimeout(timer);
     }

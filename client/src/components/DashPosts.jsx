@@ -6,15 +6,19 @@ import { Link } from "react-router-dom";
 
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
-  const [userPost, setUserPost] = useState([]);
-  console.log(userPost);
+  const [userPosts, setUserPosts] = useState([]);
+  const [showMore, setShowMore] = useState(true);
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
-          setUserPost(data.posts);
+          setUserPosts(data.posts);
+          if (data.posts.length < 9) {
+            setShowMore(false);
+          }
         }
       } catch (error) {
         console.log(error.message);
@@ -24,11 +28,29 @@ export default function DashPosts() {
       fetchPosts();
     }
   }, [currentUser._id]);
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length;
+    try {
+      const res = await fetch(
+        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setUserPosts([...userPosts,...data.posts]);
+        if (data.posts.length < 9) {
+          setShowMore(false);
+      }
+    }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar
      scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700
      dark:scrollbar-thumb-slate-500">
-      {currentUser.isAdmin && userPost.length > 0 ? (
+      {currentUser.isAdmin && userPosts.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -43,7 +65,7 @@ export default function DashPosts() {
               </Table.HeadCell>
             </Table.Head>
 
-            {userPost.map((post) => (
+            {userPosts.map((post) => (
               <Table.Body className="divide-y">
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                   <TableCell>
@@ -85,6 +107,11 @@ export default function DashPosts() {
               </Table.Body>
             ))}
           </Table>
+          {showMore && (
+            <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">
+              Show More
+            </button>)}
+          
         </>
       ) : (
         <p>You have no posts yet!</p>

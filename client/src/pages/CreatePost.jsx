@@ -133,6 +133,13 @@ export default function CreatePost() {
             {imageUploadError}
           </Alert>
         )}
+        {formData.image && (
+          <img
+            src={formData.image}
+            className="w-full h-72 object-cover"
+            alt="image"
+          />
+        )}
         <ReactQuill
           theme="snow"
           placeholder="Write something...."

@@ -5,7 +5,7 @@ import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Textarea, Button } from "flowbite-react";
 
-export default function Comment({ comment, onLike, onEdit }) {
+export default function Comment({ comment, onLike, onEdit, onDelete }) {
   const { currentUser } = useSelector((state) => state.user);
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -31,18 +31,15 @@ export default function Comment({ comment, onLike, onEdit }) {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(
-        `/api/comment/editComment/${comment._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            content: editedContent,
-          }),
-        }
-      );
+      const res = await fetch(`/api/comment/editComment/${comment._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: editedContent,
+        }),
+      });
       if (res.ok) {
         setIsEditing(false);
         onEdit(comment, editedContent);
@@ -123,12 +120,21 @@ export default function Comment({ comment, onLike, onEdit }) {
               </p>
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <button
-                    onClick={handleEdit}
-                    className="text-gray-500 hover:text-blue-600 cursor-pointer"
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={handleEdit}
+                      className="text-gray-500 hover:text-blue-600 cursor-pointer"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => onDelete(comment._id)}
+                      className="text-gray-500 hover:text-red-500 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>

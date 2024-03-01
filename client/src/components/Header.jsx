@@ -1,16 +1,28 @@
-import { Avatar, Button, Dropdown, Navbar, NavbarCollapse, TextInput } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Navbar,
+  NavbarCollapse,
+  TextInput,
+} from "flowbite-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { changeTheme } from "../redux/theme/themeSlice";
 import { signOutSuccess } from "../redux/user/userSlice";
+import { useState, useEffect } from "react";
 
 export default function Header() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const path = useLocation().pathname;
-  const {currentUser} = useSelector(state => state.user);
-  const {theme} = useSelector(state => state.theme);
+  const location = useLocation();
+  const { currentUser } = useSelector((state) => state.user);
+  const { theme } = useSelector((state) => state.theme);
+  const [searchTerm, setSearchTerm] = useState("");
+  console.log(searchTerm);
   const handleSignOut = async () => {
     try {
       const res = await fetch(`/api/user/signout`, {
@@ -26,6 +38,24 @@ export default function Header() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
   return (
     <Navbar className="border-b-2">
       <Link
@@ -42,12 +72,14 @@ export default function Header() {
         Blog
       </Link>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           type="text"
           placeholder="Search..."
           rightIcon={AiOutlineSearch}
           className="hidden lg:inline"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
 
@@ -56,37 +88,41 @@ export default function Header() {
       </Button>
 
       <div className="flex gap-2 md:order-2">
-        <Button className="w-12 h-10 rounded-3xl hidden sm:inline" color="gray" onClick={() => dispatch(changeTheme()) }>
-          {theme === "dark"? <FaMoon /> : <FaSun />}
+        <Button
+          className="w-12 h-10 rounded-3xl hidden sm:inline"
+          color="gray"
+          onClick={() => dispatch(changeTheme())}
+        >
+          {theme === "dark" ? <FaMoon /> : <FaSun />}
         </Button>
 
-        {currentUser ? (<Dropdown 
-        arrowIcon = {false}
-        inline
-        label = {
-          <Avatar
-          alt = 'user'
-          img = {currentUser.profilePicture}
-          rounded/>
-        }>
-          <Dropdown.Header>
-            <span className="block text-sm">@{currentUser.username}</span>
-            <span className="block text-sm font-medium truncate">{currentUser.email}</span>
-          </Dropdown.Header>
-          <Link to={'/dashboard?tab=profile'}>
-            <Dropdown.Item>Profile</Dropdown.Item>
-          </Link>
-          <Dropdown.Divider />
-          <Dropdown.Item onClick={handleSignOut}>Logout</Dropdown.Item>
-        
-        </Dropdown>) : (
+        {currentUser ? (
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar alt="user" img={currentUser.profilePicture} rounded />
+            }
+          >
+            <Dropdown.Header>
+              <span className="block text-sm">@{currentUser.username}</span>
+              <span className="block text-sm font-medium truncate">
+                {currentUser.email}
+              </span>
+            </Dropdown.Header>
+            <Link to={"/dashboard?tab=profile"}>
+              <Dropdown.Item>Profile</Dropdown.Item>
+            </Link>
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={handleSignOut}>Logout</Dropdown.Item>
+          </Dropdown>
+        ) : (
           <Link to="/sign-in">
-          <Button gradientDuoTone="tealToLime" outline>
-            Sign In
-          </Button>
-        </Link>
+            <Button gradientDuoTone="tealToLime" outline>
+              Sign In
+            </Button>
+          </Link>
         )}
-
       </div>
 
       <Navbar.Toggle />
